@@ -6,7 +6,7 @@ This is the starter code base for part 2 of the "Refactoring to Testable Code" (
 
 You **must have** the following already set up and running on your machine:
 
-* Java 11 or later
+* Java 25 or later
 * A development environment such as IntelliJ IDEA or Eclipse
 
 # Setting Up Project
