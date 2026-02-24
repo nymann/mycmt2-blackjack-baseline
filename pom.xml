@@ -14,14 +14,14 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.release>25</maven.compiler.release>
   </properties>
 
   <dependencies>
     <dependency> <!-- https://github.com/fusesource/jansi -->
       <groupId>org.fusesource.jansi</groupId>
       <artifactId>jansi</artifactId>
-      <version>2.4.1</version>
+      <version>2.4.2</version>
     </dependency>
 
     <dependency>
@@ -32,7 +32,13 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>3.27.6</version>
+      <version>3.27.7</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.tngtech.archunit</groupId>
+      <artifactId>archunit-junit5</artifactId>
+      <version>1.4.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -42,7 +48,7 @@
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.13.4</version>
+        <version>6.0.3</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -80,16 +86,98 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.14.1</version>
         <configuration>
-          <source>11</source>
-          <target>11</target>
+          <source>25</source>
+          <target>25</target>
+          <fork>true</fork>
+          <compilerArgs>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
+            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
+            <arg>-XDcompilePolicy=simple</arg>
+            <arg>-XDshould-stop.ifError=FLOW</arg>
+            <arg>-Xplugin:ErrorProne -Xep:NullAway:ERROR -XepOpt:NullAway:AnnotatedPackages=com.jitterted.ebp.blackjack</arg>
+          </compilerArgs>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_core</artifactId>
+              <version>2.47.0</version>
+            </path>
+            <path>
+              <groupId>com.uber.nullaway</groupId>
+              <artifactId>nullaway</artifactId>
+              <version>0.12.6</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
 
-      <!-- fixes JUnit 5 tests not always running from command-line -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.5.4</version>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>3.2.1</version>
+        <configuration>
+          <java>
+            <palantirJavaFormat>
+              <version>2.87.0</version>
+            </palantirJavaFormat>
+            <removeUnusedImports/>
+            <formatAnnotations/>
+          </java>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <phase>verify</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>4.9.8.0</version>
+        <configuration>
+          <onlyAnalyze>com.jitterted.ebp.blackjack.-</onlyAnalyze>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <phase>verify</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-maven</artifactId>
+        <version>1.22.1</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-junit5-plugin</artifactId>
+            <version>1.2.3</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <targetClasses>
+            <param>com.jitterted.ebp.blackjack.*</param>
+          </targetClasses>
+          <targetTests>
+            <param>com.jitterted.ebp.blackjack.*</param>
+          </targetTests>
+        </configuration>
       </plugin>
     </plugins>
   </build>
