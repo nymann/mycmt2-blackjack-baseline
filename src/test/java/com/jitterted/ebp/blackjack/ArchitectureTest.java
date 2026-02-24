@@ -9,6 +9,7 @@ import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 import org.junit.jupiter.api.Tag;
 
+@SuppressWarnings("unused")
 @Tag("architecture")
 @AnalyzeClasses(packages = "com.jitterted.ebp.blackjack", importOptions = ImportOption.DoNotIncludeTests.class)
 class ArchitectureTest {
