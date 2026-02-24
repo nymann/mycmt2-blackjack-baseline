@@ -1,11 +1,10 @@
 package com.jitterted.ebp.blackjack;
 
-import org.fusesource.jansi.Ansi;
-import org.fusesource.jansi.AnsiConsole;
+import static org.fusesource.jansi.Ansi.ansi;
 
 import java.util.Scanner;
-
-import static org.fusesource.jansi.Ansi.ansi;
+import org.fusesource.jansi.Ansi;
+import org.fusesource.jansi.AnsiConsole;
 
 public class Game {
 
@@ -34,22 +33,25 @@ public class Game {
     }
 
     private static void waitForEnterFromUser() {
-        System.out.println(ansi()
-                                   .cursor(3, 1)
-                                   .fgBrightBlack().a("Hit [ENTER] to start..."));
+        System.out.println(ansi().cursor(3, 1).fgBrightBlack().a("Hit [ENTER] to start..."));
 
-        System.console().readLine();
+        java.io.Console console = System.console();
+        if (console != null) {
+            console.readLine();
+        }
     }
 
     private static void displayWelcomeScreen() {
         AnsiConsole.systemInstall();
-        System.out.println(ansi()
-                                   .bgBright(Ansi.Color.WHITE)
-                                   .eraseScreen()
-                                   .cursor(1, 1)
-                                   .fgGreen().a("Welcome to")
-                                   .fgRed().a(" JitterTed's")
-                                   .fgBlack().a(" BlackJack game"));
+        System.out.println(ansi().bgBright(Ansi.Color.WHITE)
+                .eraseScreen()
+                .cursor(1, 1)
+                .fgGreen()
+                .a("Welcome to")
+                .fgRed()
+                .a(" JitterTed's")
+                .fgBlack()
+                .a(" BlackJack game"));
     }
 
     public Game() {
@@ -122,22 +124,32 @@ public class Game {
 
     private String inputFromPlayer() {
         System.out.println("[H]it or [S]tand?");
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in, java.nio.charset.StandardCharsets.UTF_8);
         return scanner.nextLine();
     }
 
     private void displayBackOfCard() {
-        System.out.print(
-                ansi()
-                        .cursorUp(7)
-                        .cursorRight(12)
-                        .a("┌─────────┐").cursorDown(1).cursorLeft(11)
-                        .a("│░░░░░░░░░│").cursorDown(1).cursorLeft(11)
-                        .a("│░ J I T ░│").cursorDown(1).cursorLeft(11)
-                        .a("│░ T E R ░│").cursorDown(1).cursorLeft(11)
-                        .a("│░ T E D ░│").cursorDown(1).cursorLeft(11)
-                        .a("│░░░░░░░░░│").cursorDown(1).cursorLeft(11)
-                        .a("└─────────┘"));
+        System.out.print(ansi().cursorUp(7)
+                .cursorRight(12)
+                .a("┌─────────┐")
+                .cursorDown(1)
+                .cursorLeft(11)
+                .a("│░░░░░░░░░│")
+                .cursorDown(1)
+                .cursorLeft(11)
+                .a("│░ J I T ░│")
+                .cursorDown(1)
+                .cursorLeft(11)
+                .a("│░ T E R ░│")
+                .cursorDown(1)
+                .cursorLeft(11)
+                .a("│░ T E D ░│")
+                .cursorDown(1)
+                .cursorLeft(11)
+                .a("│░░░░░░░░░│")
+                .cursorDown(1)
+                .cursorLeft(11)
+                .a("└─────────┘"));
     }
 
     private void displayGameState() {
@@ -165,5 +177,4 @@ public class Game {
         playerHand.display();
         System.out.println(" (" + playerHand.displayValue() + ")");
     }
-
 }

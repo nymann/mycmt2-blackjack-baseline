@@ -1,8 +1,8 @@
 package com.jitterted.ebp.blackjack;
 
-import org.fusesource.jansi.Ansi;
-
 import static org.fusesource.jansi.Ansi.ansi;
+
+import org.fusesource.jansi.Ansi;
 
 public class Card {
     private final Suit suit;
@@ -28,19 +28,13 @@ public class Card {
         lines[6] = "└─────────┘";
 
         Ansi.Color cardColor = suit.isRed() ? Ansi.Color.RED : Ansi.Color.BLACK;
-        return ansi()
-                .fg(cardColor).toString()
-                + String.join(ansi().cursorDown(1)
-                                    .cursorLeft(11)
-                                    .toString(), lines);
+        return ansi().fg(cardColor).toString()
+                + String.join(ansi().cursorDown(1).cursorLeft(11).toString(), lines);
     }
 
     @Override
     public String toString() {
-        return "Card {" +
-                "suit=" + suit +
-                ", rank=" + rank +
-                '}';
+        return "Card {" + "suit=" + suit + ", rank=" + rank + '}';
     }
 
     @Override
