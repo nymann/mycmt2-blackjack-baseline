@@ -2,36 +2,43 @@ package com.jitterted.ebp.blackjack;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
+import com.jitterted.ebp.blackjack.adapter.in.ConsolePlayerDecision;
+import com.jitterted.ebp.blackjack.adapter.out.ConsoleGameDisplay;
+import com.jitterted.ebp.blackjack.application.port.GameDisplay;
+import com.jitterted.ebp.blackjack.application.port.PlayerDecision;
+import com.jitterted.ebp.blackjack.domain.Action;
+import com.jitterted.ebp.blackjack.domain.Dealer;
 import com.jitterted.ebp.blackjack.domain.Deck;
 import com.jitterted.ebp.blackjack.domain.Hand;
-import java.util.Scanner;
+import com.jitterted.ebp.blackjack.domain.Outcome;
+import com.jitterted.ebp.blackjack.domain.Player;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 
 public class Game {
 
     private final Deck deck;
-
-    private final Hand dealerHand = new Hand();
-    private final Hand playerHand = new Hand();
+    private final GameDisplay gameDisplay;
+    private final PlayerDecision playerDecision;
+    private final Dealer dealer = new Dealer();
+    private final Player player = new Player();
 
     static void main() {
+        AnsiConsole.systemInstall();
         displayWelcomeScreen();
         waitForEnterFromUser();
 
-        playGame();
+        GameDisplay gameDisplay = new ConsoleGameDisplay();
+        PlayerDecision playerDecision = new ConsolePlayerDecision();
+        Game game = new Game(new Deck(), gameDisplay, playerDecision);
+        game.initialDeal();
+        game.play();
 
         resetScreen();
     }
 
     private static void resetScreen() {
         System.out.println(ansi().reset());
-    }
-
-    private static void playGame() {
-        Game game = new Game();
-        game.initialDeal();
-        game.play();
     }
 
     private static void waitForEnterFromUser() {
@@ -44,7 +51,6 @@ public class Game {
     }
 
     private static void displayWelcomeScreen() {
-        AnsiConsole.systemInstall();
         System.out.println(ansi().bgBright(Ansi.Color.WHITE)
                 .eraseScreen()
                 .cursor(1, 1)
@@ -56,8 +62,18 @@ public class Game {
                 .a(" BlackJack game"));
     }
 
-    public Game() {
-        deck = new Deck();
+    public Game(Deck deck, GameDisplay gameDisplay, PlayerDecision playerDecision) {
+        this.deck = deck;
+        this.gameDisplay = gameDisplay;
+        this.playerDecision = playerDecision;
+    }
+
+    Hand playerHand() {
+        return player.hand();
+    }
+
+    Hand dealerHand() {
+        return dealer.hand();
     }
 
     public void initialDeal() {
@@ -70,113 +86,45 @@ public class Game {
 
         dealerTurn();
 
-        displayFinalGameState();
+        gameDisplay.showFinalHands(player.hand(), dealer.hand());
 
         determineOutcome();
     }
 
     private void dealRoundOfCards() {
         // why: players first because this is the rule
-        playerHand.drawFrom(deck);
-        dealerHand.drawFrom(deck);
+        player.receiveCard(deck.draw());
+        dealer.dealFrom(deck);
     }
 
     private void determineOutcome() {
-        if (playerHand.isBusted()) {
-            System.out.println("You Busted, so you lose.  💸");
-        } else if (dealerHand.isBusted()) {
-            System.out.println("Dealer went BUST, Player wins! Yay for you!! 💵");
-        } else if (playerHand.beats(dealerHand)) {
-            System.out.println("You beat the Dealer! 💵");
-        } else if (playerHand.pushes(dealerHand)) {
-            System.out.println("Push: Nobody wins, we'll call it even.");
+        if (player.isBusted()) {
+            gameDisplay.announceOutcome(Outcome.PLAYER_BUSTED);
+        } else if (dealer.isBusted()) {
+            gameDisplay.announceOutcome(Outcome.DEALER_BUSTED);
+        } else if (player.hand().beats(dealer.hand())) {
+            gameDisplay.announceOutcome(Outcome.PLAYER_WINS);
+        } else if (player.hand().pushes(dealer.hand())) {
+            gameDisplay.announceOutcome(Outcome.PUSH);
         } else {
-            System.out.println("You lost to the Dealer. 💸");
+            gameDisplay.announceOutcome(Outcome.DEALER_WINS);
         }
     }
 
-    private void dealerTurn() {
-        // Dealer makes its choice automatically based on a simple heuristic (<=16 must hit, =>17 must stand)
-        if (!playerHand.isBusted()) {
-            while (dealerHand.dealerMustDrawCard()) {
-                dealerHand.drawFrom(deck);
-            }
+    void dealerTurn() {
+        if (!player.isBusted()) {
+            dealer.playTurn(deck);
         }
     }
 
     private void playerTurn() {
-        // get Player's decision: hit until they stand, then they're done (or they go bust)
-
-        while (!playerHand.isBusted()) {
-            displayGameState();
-            String playerChoice = inputFromPlayer().toLowerCase();
-            if (playerChoice.startsWith("s")) {
+        while (!player.isBusted()) {
+            gameDisplay.showPlayerTurn(player.hand(), dealer.hand());
+            Action action = playerDecision.decide(player.hand(), dealer.hand());
+            if (action == Action.STAND) {
                 break;
             }
-            if (playerChoice.startsWith("h")) {
-                playerHand.drawFrom(deck);
-                if (playerHand.isBusted()) {
-                    return;
-                }
-            } else {
-                System.out.println("You need to [H]it or [S]tand");
-            }
+            player.receiveCard(deck.draw());
         }
-    }
-
-    private String inputFromPlayer() {
-        System.out.println("[H]it or [S]tand?");
-        Scanner scanner = new Scanner(System.in, java.nio.charset.StandardCharsets.UTF_8);
-        return scanner.nextLine();
-    }
-
-    private void displayBackOfCard() {
-        System.out.print(ansi().cursorUp(7)
-                .cursorRight(12)
-                .a("┌─────────┐")
-                .cursorDown(1)
-                .cursorLeft(11)
-                .a("│░░░░░░░░░│")
-                .cursorDown(1)
-                .cursorLeft(11)
-                .a("│░ J I T ░│")
-                .cursorDown(1)
-                .cursorLeft(11)
-                .a("│░ T E R ░│")
-                .cursorDown(1)
-                .cursorLeft(11)
-                .a("│░ T E D ░│")
-                .cursorDown(1)
-                .cursorLeft(11)
-                .a("│░░░░░░░░░│")
-                .cursorDown(1)
-                .cursorLeft(11)
-                .a("└─────────┘"));
-    }
-
-    private void displayGameState() {
-        System.out.print(ansi().eraseScreen().cursor(1, 1));
-        System.out.println("Dealer has: ");
-        System.out.println(dealerHand.displayFaceUpCard());
-
-        // second card is the hole card, which is hidden, or "face down"
-        displayBackOfCard();
-
-        System.out.println();
-        System.out.println("Player has: ");
-        playerHand.display();
-        System.out.println(" (" + playerHand.displayValue() + ")");
-    }
-
-    private void displayFinalGameState() {
-        System.out.print(ansi().eraseScreen().cursor(1, 1));
-        System.out.println("Dealer has: ");
-        dealerHand.display();
-        System.out.println(" (" + dealerHand.displayValue() + ")");
-
-        System.out.println();
-        System.out.println("Player has: ");
-        playerHand.display();
-        System.out.println(" (" + playerHand.displayValue() + ")");
     }
 }

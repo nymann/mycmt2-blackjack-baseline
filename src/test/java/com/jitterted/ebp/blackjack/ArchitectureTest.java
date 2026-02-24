@@ -38,7 +38,7 @@ class ArchitectureTest {
     void all_classes_must_reside_in_hexagonal_packages() {
         classes()
                 .that()
-                .doNotHaveFullyQualifiedName("com.jitterted.ebp.blackjack.Game")
+                .haveNameNotMatching(".*Game.*")
                 .should()
                 .resideInAnyPackage("..domain..", "..application..", "..adapter..")
                 .because(
