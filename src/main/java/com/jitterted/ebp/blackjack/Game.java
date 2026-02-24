@@ -15,7 +15,7 @@ public class Game {
     private final Hand dealerHand = new Hand();
     private final Hand playerHand = new Hand();
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         displayWelcomeScreen();
         waitForEnterFromUser();
 
