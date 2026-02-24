@@ -16,6 +16,10 @@ public class Deck {
         Collections.shuffle(cards);
     }
 
+    public Deck(List<Card> cards) {
+        this.cards.addAll(cards);
+    }
+
     public int size() {
         return cards.size();
     }

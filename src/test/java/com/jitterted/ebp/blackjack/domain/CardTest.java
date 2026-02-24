@@ -1,14 +1,12 @@
 package com.jitterted.ebp.blackjack.domain;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.fusesource.jansi.Ansi.ansi;
 
 import org.junit.jupiter.api.Test;
 
 class CardTest {
 
     private static final Suit DUMMY_SUIT = Suit.HEARTS;
-    private static final Rank DUMMY_RANK = Rank.TEN;
 
     @Test
     public void withNumberCardHasNumericValueOfTheNumber() throws Exception {
@@ -32,16 +30,11 @@ class CardTest {
     }
 
     @Test
-    public void suitOfHeartsOrDiamondsIsDisplayedInRed() throws Exception {
-        // given a card with Hearts or Diamonds
-        Card heartsCard = new Card(Suit.HEARTS, DUMMY_RANK);
-        Card diamondsCard = new Card(Suit.DIAMONDS, DUMMY_RANK);
+    public void cardExposesRankAndSuit() {
+        Card card = new Card(Suit.HEARTS, Rank.KING);
 
-        // when we ask for its display representation
-        String ansiRedString = ansi().fgRed().toString();
-
-        // then we expect a red color ansi sequence
-        assertThat(heartsCard.display()).contains(ansiRedString);
-        assertThat(diamondsCard.display()).contains(ansiRedString);
+        assertThat(card.rank()).isEqualTo(Rank.KING);
+        assertThat(card.suit()).isEqualTo(Suit.HEARTS);
+        assertThat(card.suit().isRed()).isTrue();
     }
 }

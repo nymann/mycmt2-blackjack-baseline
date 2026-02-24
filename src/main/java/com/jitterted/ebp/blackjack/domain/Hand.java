@@ -1,10 +1,8 @@
 package com.jitterted.ebp.blackjack.domain;
 
-import static org.fusesource.jansi.Ansi.ansi;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Hand {
     private final List<Card> cards = new ArrayList<>();
@@ -15,7 +13,7 @@ public class Hand {
 
     public Hand() {}
 
-    private int value() {
+    public int value() {
         int handValue = cards.stream().mapToInt(Card::rankValue).sum();
 
         // does the hand contain at least 1 Ace?
@@ -29,18 +27,16 @@ public class Hand {
         return handValue;
     }
 
-    public String displayFaceUpCard() {
-        return cards.get(0).display();
+    public List<Card> cards() {
+        return Collections.unmodifiableList(cards);
     }
 
-    public boolean dealerMustDrawCard() {
-        return value() <= 16;
+    public Card faceUpCard() {
+        return cards.get(0);
     }
 
-    public void display() {
-        System.out.println(cards.stream()
-                .map(Card::display)
-                .collect(Collectors.joining(ansi().cursorUp(6).cursorRight(1).toString())));
+    public void addCard(Card card) {
+        cards.add(card);
     }
 
     public void drawFrom(Deck deck) {
@@ -57,10 +53,6 @@ public class Hand {
 
     public boolean beats(Hand hand) {
         return hand.value() < value();
-    }
-
-    public String displayValue() {
-        return String.valueOf(value());
     }
 
     public boolean valueEquals(int target) {
