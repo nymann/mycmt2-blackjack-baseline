@@ -1,4 +1,4 @@
-package com.jitterted.ebp.blackjack;
+package com.jitterted.ebp.blackjack.domain;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
@@ -29,15 +29,15 @@ public class Hand {
         return handValue;
     }
 
-    String displayFaceUpCard() {
+    public String displayFaceUpCard() {
         return cards.get(0).display();
     }
 
-    boolean dealerMustDrawCard() {
+    public boolean dealerMustDrawCard() {
         return value() <= 16;
     }
 
-    void display() {
+    public void display() {
         System.out.println(cards.stream()
                 .map(Card::display)
                 .collect(Collectors.joining(ansi().cursorUp(6).cursorRight(1).toString())));
@@ -47,19 +47,19 @@ public class Hand {
         cards.add(deck.draw());
     }
 
-    boolean isBusted() {
+    public boolean isBusted() {
         return value() > 21;
     }
 
-    boolean pushes(Hand hand) {
+    public boolean pushes(Hand hand) {
         return hand.value() == value();
     }
 
-    boolean beats(Hand hand) {
+    public boolean beats(Hand hand) {
         return hand.value() < value();
     }
 
-    String displayValue() {
+    public String displayValue() {
         return String.valueOf(value());
     }
 

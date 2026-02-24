@@ -2,6 +2,8 @@ package com.jitterted.ebp.blackjack;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
+import com.jitterted.ebp.blackjack.domain.Deck;
+import com.jitterted.ebp.blackjack.domain.Hand;
 import java.util.Scanner;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
