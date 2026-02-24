@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Skip if no Java files are staged
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR -- '*.java')
+if [ -z "$STAGED_FILES" ]; then
+    exit 0
+fi
+
+echo "Spotless: checking $(echo "$STAGED_FILES" | wc -l) staged Java file(s)..."
+
+if ./mvnw --batch-mode --no-transfer-progress spotless:check -DratchetFrom=HEAD > /dev/null 2>&1; then
+    exit 0
+fi
+
+echo "Spotless found formatting violations. Applying fixes..."
+./mvnw --batch-mode --no-transfer-progress spotless:apply -DratchetFrom=HEAD > /dev/null 2>&1
+echo "Files reformatted. Review the changes, stage them, and commit again."
+exit 1
