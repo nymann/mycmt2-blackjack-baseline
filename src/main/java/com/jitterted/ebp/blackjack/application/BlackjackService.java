@@ -5,7 +5,6 @@ import com.jitterted.ebp.blackjack.application.port.PlayerDecisionDecider;
 import com.jitterted.ebp.blackjack.domain.Action;
 import com.jitterted.ebp.blackjack.domain.Dealer;
 import com.jitterted.ebp.blackjack.domain.Deck;
-import com.jitterted.ebp.blackjack.domain.Hand;
 import com.jitterted.ebp.blackjack.domain.Outcome;
 import com.jitterted.ebp.blackjack.domain.Player;
 
@@ -43,14 +42,6 @@ public class BlackjackService {
         gameDisplay.resetScreen();
     }
 
-    Hand playerHand() {
-        return player.hand();
-    }
-
-    Hand dealerHand() {
-        return dealer.hand();
-    }
-
     private void dealRoundOfCards() {
         // why: players first because this is the rule
         player.receiveCard(deck.draw());
@@ -58,17 +49,8 @@ public class BlackjackService {
     }
 
     private void determineOutcome() {
-        if (player.isBusted()) {
-            gameDisplay.announceOutcome(Outcome.PLAYER_BUSTED);
-        } else if (dealer.isBusted()) {
-            gameDisplay.announceOutcome(Outcome.DEALER_BUSTED);
-        } else if (player.hand().beats(dealer.hand())) {
-            gameDisplay.announceOutcome(Outcome.PLAYER_WINS);
-        } else if (player.hand().pushes(dealer.hand())) {
-            gameDisplay.announceOutcome(Outcome.PUSH);
-        } else {
-            gameDisplay.announceOutcome(Outcome.DEALER_WINS);
-        }
+        Outcome outcome = Outcome.determine(player.hand(), dealer.hand());
+        gameDisplay.announceOutcome(outcome);
     }
 
     void dealerTurn() {
