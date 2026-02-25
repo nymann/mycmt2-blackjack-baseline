@@ -55,6 +55,11 @@ public class ConsoleGameDisplay implements GameDisplay {
     }
 
     @Override
+    public void showDealerTurn(Hand playerHand, Hand dealerHand) {
+        showFinalHands(playerHand, dealerHand);
+    }
+
+    @Override
     public void showFinalHands(Hand playerHand, Hand dealerHand) {
         System.out.print(ansi().eraseScreen().cursor(1, 1));
         System.out.println("Dealer has: ");

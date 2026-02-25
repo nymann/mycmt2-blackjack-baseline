@@ -15,6 +15,8 @@ public interface GameDisplay {
 
     void showPlayerTurn(Hand playerHand, Hand dealerHand);
 
+    void showDealerTurn(Hand playerHand, Hand dealerHand);
+
     void showFinalHands(Hand playerHand, Hand dealerHand);
 
     void announceOutcome(Outcome outcome);

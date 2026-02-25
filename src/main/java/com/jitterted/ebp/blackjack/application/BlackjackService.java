@@ -56,6 +56,7 @@ public class BlackjackService {
     private void dealerTurn() {
         PlayingStrategy dealerStrategy = new DealerPlayingStrategy();
         while (!dealer.isBusted()) {
+            gameDisplay.showDealerTurn(player.hand(), dealer.hand());
             Action action = dealerStrategy.decide(dealer.hand(), player.hand());
             if (action == Action.HIT) {
                 dealer.receiveCard(deck.draw());

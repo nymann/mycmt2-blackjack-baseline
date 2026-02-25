@@ -33,6 +33,9 @@ public class SpyGameDisplay implements GameDisplay {
     public void showPlayerTurn(Hand playerHand, Hand dealerHand) {}
 
     @Override
+    public void showDealerTurn(Hand playerHand, Hand dealerHand) {}
+
+    @Override
     public void showFinalHands(Hand playerHand, Hand dealerHand) {}
 
     @Override
