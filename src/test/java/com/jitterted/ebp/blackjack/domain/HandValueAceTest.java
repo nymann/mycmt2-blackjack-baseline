@@ -1,14 +1,11 @@
 package com.jitterted.ebp.blackjack.domain;
 
+import static com.jitterted.ebp.blackjack.domain.TestHandFactory.createHand;
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class HandValueAceTest {
-
-    private static final Suit DUMMY_SUIT = Suit.CLUBS;
 
     @Test
     public void handWithOneAceAndOtherCardValuedLessThan10ThenAceIsValuedAt11() throws Exception {
@@ -29,13 +26,5 @@ public class HandValueAceTest {
         Hand hand = createHand(Rank.ACE, Rank.EIGHT, Rank.THREE);
 
         assertThat(hand.valueEquals(1 + 8 + 3)).isTrue();
-    }
-
-    private Hand createHand(Rank... ranks) {
-        List<Card> cards = new ArrayList<>();
-        for (Rank rank : ranks) {
-            cards.add(new Card(DUMMY_SUIT, rank));
-        }
-        return new Hand(cards);
     }
 }

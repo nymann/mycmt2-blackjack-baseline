@@ -1,14 +1,11 @@
 package com.jitterted.ebp.blackjack.domain;
 
+import static com.jitterted.ebp.blackjack.domain.TestHandFactory.createHand;
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class HandTest {
-
-    private static final Suit DUMMY_SUIT = Suit.CLUBS;
 
     @Test
     void handValueOf21IsNotBusted() {
@@ -54,13 +51,5 @@ class HandTest {
         Hand hand2 = createHand(Rank.TEN, Rank.NINE); // 19
 
         assertThat(hand1.pushes(hand2)).isFalse();
-    }
-
-    private Hand createHand(Rank... ranks) {
-        List<Card> cards = new ArrayList<>();
-        for (Rank rank : ranks) {
-            cards.add(new Card(DUMMY_SUIT, rank));
-        }
-        return new Hand(cards);
     }
 }
