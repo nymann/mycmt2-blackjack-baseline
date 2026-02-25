@@ -29,7 +29,9 @@ public class BlackjackService {
         dealer.initialDeal(deck, player);
 
         playerTurn();
-        dealerTurn();
+        if (!player.isBusted()) {
+            dealerTurn();
+        }
 
         gameDisplay.showFinalHands(player.hand(), dealer.hand());
 
@@ -52,9 +54,6 @@ public class BlackjackService {
     }
 
     private void dealerTurn() {
-        if (player.isBusted()) {
-            return;
-        }
         PlayingStrategy dealerStrategy = new DealerPlayingStrategy();
         while (!dealer.isBusted()) {
             Action action = dealerStrategy.decide(dealer.hand(), player.hand());
