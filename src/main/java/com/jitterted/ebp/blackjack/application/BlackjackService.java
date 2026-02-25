@@ -3,10 +3,8 @@ package com.jitterted.ebp.blackjack.application;
 import com.jitterted.ebp.blackjack.application.port.GameDisplay;
 import com.jitterted.ebp.blackjack.application.port.PlayingStrategy;
 import com.jitterted.ebp.blackjack.domain.Action;
-import com.jitterted.ebp.blackjack.domain.Actor;
 import com.jitterted.ebp.blackjack.domain.Dealer;
 import com.jitterted.ebp.blackjack.domain.Deck;
-import com.jitterted.ebp.blackjack.domain.Hand;
 import com.jitterted.ebp.blackjack.domain.Outcome;
 import com.jitterted.ebp.blackjack.domain.Player;
 
@@ -46,7 +44,10 @@ public class BlackjackService {
     private void playerTurn() {
         while (!player.isBusted()) {
             gameDisplay.showPlayerTurn(player.hand(), dealer.hand());
-            if (!hit(player, playerStrategy, dealer.hand())) {
+            Action action = playerStrategy.decide(player.hand(), dealer.hand());
+            if (action == Action.HIT) {
+                player.receiveCard(deck.draw());
+            } else {
                 break;
             }
         }
@@ -55,18 +56,12 @@ public class BlackjackService {
     private void dealerTurn() {
         PlayingStrategy dealerStrategy = new DealerPlayingStrategy();
         while (!dealer.isBusted()) {
-            if (!hit(dealer, dealerStrategy, player.hand())) {
+            Action action = dealerStrategy.decide(dealer.hand(), player.hand());
+            if (action == Action.HIT) {
+                dealer.receiveCard(deck.draw());
+            } else {
                 break;
             }
         }
-    }
-
-    private boolean hit(Actor actor, PlayingStrategy strategy, Hand opponentHand) {
-        Action action = strategy.decide(actor.hand(), opponentHand);
-        if (action == Action.HIT) {
-            actor.receiveCard(deck.draw());
-            return true;
-        }
-        return false;
     }
 }
