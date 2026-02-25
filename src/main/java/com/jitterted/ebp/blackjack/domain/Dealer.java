@@ -8,6 +8,11 @@ public class Dealer implements Actor {
         hand.addCard(card);
     }
 
+    public void initialDeal(Deck deck, Actor actor) {
+        dealRoundOfCards(deck, actor);
+        dealRoundOfCards(deck, actor);
+    }
+
     public void playTurn(Deck deck) {
         while (hand.value() <= 16) {
             hand.drawFrom(deck);
@@ -22,5 +27,10 @@ public class Dealer implements Actor {
     @Override
     public boolean isBusted() {
         return hand.isBusted();
+    }
+
+    private void dealRoundOfCards(Deck deck, Actor actor) {
+        actor.receiveCard(deck.draw());
+        this.receiveCard(deck.draw());
     }
 }
