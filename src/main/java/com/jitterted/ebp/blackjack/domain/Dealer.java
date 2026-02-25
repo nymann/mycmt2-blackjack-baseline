@@ -3,8 +3,12 @@ package com.jitterted.ebp.blackjack.domain;
 public class Dealer {
     private final Hand hand = new Hand();
 
+    public void receiveCard(Card card) {
+        hand.addCard(card);
+    }
+
     public void dealFrom(Deck deck) {
-        hand.drawFrom(deck);
+        receiveCard(deck.draw());
     }
 
     public void playTurn(Deck deck) {
