@@ -32,7 +32,9 @@ public class BlackjackService {
         dealerTurn();
 
         gameDisplay.showFinalHands(player.hand(), dealer.hand());
-        determineOutcome();
+
+        Outcome outcome = Outcome.determine(player.hand(), dealer.hand());
+        gameDisplay.announceOutcome(outcome);
 
         gameDisplay.resetScreen();
     }
@@ -55,10 +57,5 @@ public class BlackjackService {
                 dealer.receiveCard(deck.draw());
             }
         }
-    }
-
-    private void determineOutcome() {
-        Outcome outcome = Outcome.determine(player.hand(), dealer.hand());
-        gameDisplay.announceOutcome(outcome);
     }
 }
