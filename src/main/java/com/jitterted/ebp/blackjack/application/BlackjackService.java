@@ -26,7 +26,7 @@ public class BlackjackService {
         gameDisplay.displayWelcomeScreen();
         gameDisplay.promptToStart();
 
-        initialDeal();
+        dealer.initialDeal(deck, player);
 
         playerTurn();
         dealerTurn();
@@ -35,10 +35,6 @@ public class BlackjackService {
         determineOutcome();
 
         gameDisplay.resetScreen();
-    }
-
-    private void initialDeal() {
-        dealer.initialDeal(deck, player);
     }
 
     private void playerTurn() {
