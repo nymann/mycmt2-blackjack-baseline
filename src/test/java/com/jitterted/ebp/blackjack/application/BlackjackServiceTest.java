@@ -1,33 +1,20 @@
-package com.jitterted.ebp.blackjack;
+package com.jitterted.ebp.blackjack.application;
 
 import static org.assertj.core.api.Assertions.*;
 
-import com.jitterted.ebp.blackjack.application.port.GameDisplay;
-import com.jitterted.ebp.blackjack.application.port.PlayerDecision;
+import com.jitterted.ebp.blackjack.adapter.out.DummyGameDisplay;
+import com.jitterted.ebp.blackjack.application.port.PlayerDecisionDecider;
 import com.jitterted.ebp.blackjack.domain.Action;
 import com.jitterted.ebp.blackjack.domain.Card;
 import com.jitterted.ebp.blackjack.domain.Deck;
-import com.jitterted.ebp.blackjack.domain.Hand;
-import com.jitterted.ebp.blackjack.domain.Outcome;
 import com.jitterted.ebp.blackjack.domain.Rank;
 import com.jitterted.ebp.blackjack.domain.Suit;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-class GameTest {
+class BlackjackServiceTest {
 
-    private static final GameDisplay NO_OP_GAME_DISPLAY = new GameDisplay() {
-        @Override
-        public void showPlayerTurn(Hand playerHand, Hand dealerHand) {}
-
-        @Override
-        public void showFinalHands(Hand playerHand, Hand dealerHand) {}
-
-        @Override
-        public void announceOutcome(Outcome outcome) {}
-    };
-
-    private static final PlayerDecision ALWAYS_STAND = (playerHand, dealerHand) -> Action.STAND;
+    private static final PlayerDecisionDecider ALWAYS_STAND = (playerHand, dealerHand) -> Action.STAND;
 
     // -- Characterization: initialDeal --
 
@@ -40,11 +27,11 @@ class GameTest {
                 new Card(Suit.SPADES, Rank.FIVE) // dealer 2
                 ));
 
-        Game game = new Game(deck, NO_OP_GAME_DISPLAY, ALWAYS_STAND);
-        game.initialDeal();
+        BlackjackService service = new BlackjackService(deck, new DummyGameDisplay(), ALWAYS_STAND);
+        service.initialDeal();
 
-        assertThat(game.playerHand().valueEquals(2 + 4)).isTrue();
-        assertThat(game.dealerHand().valueEquals(3 + 5)).isTrue();
+        assertThat(service.playerHand().valueEquals(2 + 4)).isTrue();
+        assertThat(service.dealerHand().valueEquals(3 + 5)).isTrue();
     }
 
     // -- Characterization: dealerTurn --
@@ -60,12 +47,12 @@ class GameTest {
                 new Card(Suit.CLUBS, Rank.TWO) // dealer draws this (16 -> must hit)
                 ));
 
-        Game game = new Game(deck, NO_OP_GAME_DISPLAY, ALWAYS_STAND);
-        game.initialDeal();
-        game.dealerTurn();
+        BlackjackService service = new BlackjackService(deck, new DummyGameDisplay(), ALWAYS_STAND);
+        service.initialDeal();
+        service.dealerTurn();
 
         // Dealer should have drawn: 10 + 6 + 2 = 18
-        assertThat(game.dealerHand().valueEquals(18)).isTrue();
+        assertThat(service.dealerHand().valueEquals(18)).isTrue();
     }
 
     @Test
@@ -78,20 +65,16 @@ class GameTest {
                 new Card(Suit.SPADES, Rank.SEVEN) // dealer 2
                 ));
 
-        Game game = new Game(deck, NO_OP_GAME_DISPLAY, ALWAYS_STAND);
-        game.initialDeal();
-        game.dealerTurn();
+        BlackjackService service = new BlackjackService(deck, new DummyGameDisplay(), ALWAYS_STAND);
+        service.initialDeal();
+        service.dealerTurn();
 
         // Dealer should stand at 17
-        assertThat(game.dealerHand().valueEquals(17)).isTrue();
+        assertThat(service.dealerHand().valueEquals(17)).isTrue();
     }
 
     @Test
     void dealerSkipsTurnWhenPlayerIsBusted() {
-        // Player has 10+6=16, NOT busted - but we need player busted
-        // Player: K + Q = 20, then draws 5 -> 25 busted
-        // But we can't trigger playerTurn without I/O...
-        // Instead: manually bust the player hand, then verify dealer doesn't draw
         Deck deck = new Deck(List.of(
                 new Card(Suit.HEARTS, Rank.TEN), // player 1
                 new Card(Suit.SPADES, Rank.SIX), // dealer 1 (dealer has 6+10=16, would draw)
@@ -100,19 +83,19 @@ class GameTest {
                 new Card(Suit.CLUBS, Rank.FIVE) // would be dealer's draw if not skipped
                 ));
 
-        Game game = new Game(deck, NO_OP_GAME_DISPLAY, ALWAYS_STAND);
-        game.initialDeal();
+        BlackjackService service = new BlackjackService(deck, new DummyGameDisplay(), ALWAYS_STAND);
+        service.initialDeal();
 
         // Player has 10+K(10)=20, not busted.
         // To characterize the skip behavior, we need a busted player.
         // Let's draw an extra card to bust the player.
-        game.playerHand().addCard(new Card(Suit.DIAMONDS, Rank.FIVE));
-        assertThat(game.playerHand().isBusted()).isTrue(); // 20+5=25
+        service.playerHand().addCard(new Card(Suit.DIAMONDS, Rank.FIVE));
+        assertThat(service.playerHand().isBusted()).isTrue(); // 20+5=25
 
-        game.dealerTurn();
+        service.dealerTurn();
 
         // Dealer should NOT have drawn (skipped) - still 6+10=16
-        assertThat(game.dealerHand().valueEquals(16)).isTrue();
+        assertThat(service.dealerHand().valueEquals(16)).isTrue();
     }
 
     // -- Characterization: outcome determination --
@@ -127,11 +110,11 @@ class GameTest {
                 new Card(Suit.SPADES, Rank.TEN) // dealer 2
                 ));
 
-        Game game = new Game(deck, NO_OP_GAME_DISPLAY, ALWAYS_STAND);
-        game.initialDeal();
-        game.playerHand().addCard(new Card(Suit.DIAMONDS, Rank.FIVE));
+        BlackjackService service = new BlackjackService(deck, new DummyGameDisplay(), ALWAYS_STAND);
+        service.initialDeal();
+        service.playerHand().addCard(new Card(Suit.DIAMONDS, Rank.FIVE));
 
-        assertThat(game.playerHand().isBusted()).isTrue();
+        assertThat(service.playerHand().isBusted()).isTrue();
     }
 
     @Test
@@ -145,12 +128,12 @@ class GameTest {
                 new Card(Suit.CLUBS, Rank.TEN) // dealer draws this
                 ));
 
-        Game game = new Game(deck, NO_OP_GAME_DISPLAY, ALWAYS_STAND);
-        game.initialDeal();
-        game.dealerTurn();
+        BlackjackService service = new BlackjackService(deck, new DummyGameDisplay(), ALWAYS_STAND);
+        service.initialDeal();
+        service.dealerTurn();
 
-        assertThat(game.dealerHand().isBusted()).isTrue();
-        assertThat(game.playerHand().isBusted()).isFalse();
+        assertThat(service.dealerHand().isBusted()).isTrue();
+        assertThat(service.playerHand().isBusted()).isFalse();
     }
 
     @Test
@@ -163,11 +146,11 @@ class GameTest {
                 new Card(Suit.SPADES, Rank.EIGHT) // dealer 2
                 ));
 
-        Game game = new Game(deck, NO_OP_GAME_DISPLAY, ALWAYS_STAND);
-        game.initialDeal();
-        game.dealerTurn();
+        BlackjackService service = new BlackjackService(deck, new DummyGameDisplay(), ALWAYS_STAND);
+        service.initialDeal();
+        service.dealerTurn();
 
-        assertThat(game.playerHand().beats(game.dealerHand())).isTrue();
+        assertThat(service.playerHand().beats(service.dealerHand())).isTrue();
     }
 
     @Test
@@ -180,11 +163,11 @@ class GameTest {
                 new Card(Suit.SPADES, Rank.EIGHT) // dealer 2
                 ));
 
-        Game game = new Game(deck, NO_OP_GAME_DISPLAY, ALWAYS_STAND);
-        game.initialDeal();
-        game.dealerTurn();
+        BlackjackService service = new BlackjackService(deck, new DummyGameDisplay(), ALWAYS_STAND);
+        service.initialDeal();
+        service.dealerTurn();
 
-        assertThat(game.playerHand().pushes(game.dealerHand())).isTrue();
+        assertThat(service.playerHand().pushes(service.dealerHand())).isTrue();
     }
 
     @Test
@@ -197,13 +180,13 @@ class GameTest {
                 new Card(Suit.SPADES, Rank.EIGHT) // dealer 2
                 ));
 
-        Game game = new Game(deck, NO_OP_GAME_DISPLAY, ALWAYS_STAND);
-        game.initialDeal();
-        game.dealerTurn();
+        BlackjackService service = new BlackjackService(deck, new DummyGameDisplay(), ALWAYS_STAND);
+        service.initialDeal();
+        service.dealerTurn();
 
-        assertThat(game.playerHand().isBusted()).isFalse();
-        assertThat(game.dealerHand().isBusted()).isFalse();
-        assertThat(game.playerHand().beats(game.dealerHand())).isFalse();
-        assertThat(game.playerHand().pushes(game.dealerHand())).isFalse();
+        assertThat(service.playerHand().isBusted()).isFalse();
+        assertThat(service.dealerHand().isBusted()).isFalse();
+        assertThat(service.playerHand().beats(service.dealerHand())).isFalse();
+        assertThat(service.playerHand().pushes(service.dealerHand())).isFalse();
     }
 }
