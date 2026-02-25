@@ -4,8 +4,8 @@ import com.jitterted.ebp.blackjack.adapter.in.ConsolePlayerActionPrompter;
 import com.jitterted.ebp.blackjack.adapter.out.ConsoleGameDisplay;
 import com.jitterted.ebp.blackjack.application.BlackjackService;
 import com.jitterted.ebp.blackjack.application.port.GameDisplay;
-import com.jitterted.ebp.blackjack.application.port.PlayingStrategy;
 import com.jitterted.ebp.blackjack.domain.Deck;
+import com.jitterted.ebp.blackjack.domain.PlayingStrategy;
 
 public class Game {
 

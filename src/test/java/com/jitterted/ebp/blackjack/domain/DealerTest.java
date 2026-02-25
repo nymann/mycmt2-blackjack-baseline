@@ -18,7 +18,7 @@ class DealerTest {
         Dealer dealer = new Dealer();
         dealer.receiveCard(deck.draw());
         dealer.receiveCard(deck.draw());
-        dealer.playTurn(deck);
+        dealer.playTurn(deck, new Hand());
 
         assertThat(dealer.hand().valueEquals(18)).isTrue();
     }
@@ -33,7 +33,7 @@ class DealerTest {
         Dealer dealer = new Dealer();
         dealer.receiveCard(deck.draw());
         dealer.receiveCard(deck.draw());
-        dealer.playTurn(deck);
+        dealer.playTurn(deck, new Hand());
 
         assertThat(dealer.hand().valueEquals(17)).isTrue();
     }
@@ -51,7 +51,7 @@ class DealerTest {
         Dealer dealer = new Dealer();
         dealer.receiveCard(deck.draw());
         dealer.receiveCard(deck.draw());
-        dealer.playTurn(deck);
+        dealer.playTurn(deck, new Hand());
 
         assertThat(dealer.hand().valueEquals(18)).isTrue();
     }
@@ -65,7 +65,7 @@ class DealerTest {
         Dealer dealer = new Dealer();
         dealer.receiveCard(deck.draw());
         dealer.receiveCard(deck.draw());
-        dealer.playTurn(deck);
+        dealer.playTurn(deck, new Hand());
 
         assertThat(dealer.isBusted()).isTrue();
     }

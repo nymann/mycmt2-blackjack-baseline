@@ -3,11 +3,11 @@ package com.jitterted.ebp.blackjack.application;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.jitterted.ebp.blackjack.adapter.out.SpyGameDisplay;
-import com.jitterted.ebp.blackjack.application.port.PlayingStrategy;
 import com.jitterted.ebp.blackjack.domain.Action;
 import com.jitterted.ebp.blackjack.domain.Card;
 import com.jitterted.ebp.blackjack.domain.Deck;
 import com.jitterted.ebp.blackjack.domain.Outcome;
+import com.jitterted.ebp.blackjack.domain.PlayingStrategy;
 import com.jitterted.ebp.blackjack.domain.Rank;
 import com.jitterted.ebp.blackjack.domain.Suit;
 import java.util.List;

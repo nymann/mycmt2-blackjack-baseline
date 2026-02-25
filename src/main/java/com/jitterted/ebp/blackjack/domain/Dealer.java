@@ -13,9 +13,10 @@ public class Dealer implements Actor {
         dealRoundOfCards(deck, actor);
     }
 
-    public void playTurn(Deck deck) {
-        while (hand.value() <= 16) {
-            hand.drawFrom(deck);
+    public void playTurn(Deck deck, Hand opponentHand) {
+        DealerPlayingStrategy strategy = new DealerPlayingStrategy();
+        while (strategy.decide(hand, opponentHand) == Action.HIT) {
+            receiveCard(deck.draw());
         }
     }
 
