@@ -1,8 +1,9 @@
 package com.jitterted.ebp.blackjack.domain;
 
-public class Dealer {
+public class Dealer implements Actor {
     private final Hand hand = new Hand();
 
+    @Override
     public void receiveCard(Card card) {
         hand.addCard(card);
     }
@@ -13,10 +14,12 @@ public class Dealer {
         }
     }
 
+    @Override
     public Hand hand() {
         return hand;
     }
 
+    @Override
     public boolean isBusted() {
         return hand.isBusted();
     }
