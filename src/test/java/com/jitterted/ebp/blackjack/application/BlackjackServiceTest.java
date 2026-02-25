@@ -18,6 +18,19 @@ class BlackjackServiceTest {
 
     private static final PlayerActionPrompter ALWAYS_HIT = (playerHand, dealerHand) -> Action.HIT;
 
+    private static PlayerActionPrompter hitThenStand() {
+        return new PlayerActionPrompter() {
+            private int calls = 0;
+
+            @Override
+            public Action prompt(
+                    com.jitterted.ebp.blackjack.domain.Hand playerHand,
+                    com.jitterted.ebp.blackjack.domain.Hand dealerHand) {
+                return calls++ == 0 ? Action.HIT : Action.STAND;
+            }
+        };
+    }
+
     // -- Outcome announcement --
 
     @Test
@@ -30,18 +43,8 @@ class BlackjackServiceTest {
                 new Card(Suit.SPADES, Rank.TEN),
                 new Card(Suit.CLUBS, Rank.TEN)));
         SpyGameDisplay spy = new SpyGameDisplay();
-        PlayerActionPrompter hitThenStand = new PlayerActionPrompter() {
-            private int calls = 0;
 
-            @Override
-            public Action prompt(
-                    com.jitterted.ebp.blackjack.domain.Hand playerHand,
-                    com.jitterted.ebp.blackjack.domain.Hand dealerHand) {
-                return calls++ == 0 ? Action.HIT : Action.STAND;
-            }
-        };
-
-        BlackjackService service = new BlackjackService(deck, spy, hitThenStand);
+        BlackjackService service = new BlackjackService(deck, spy, hitThenStand());
         service.play();
 
         assertThat(spy.announcedOutcome()).isEqualTo(Outcome.PLAYER_BUSTED);
@@ -125,18 +128,8 @@ class BlackjackServiceTest {
                 new Card(Suit.SPADES, Rank.TEN),
                 new Card(Suit.CLUBS, Rank.TEN)));
         SpyGameDisplay spy = new SpyGameDisplay();
-        PlayerActionPrompter hitThenStand = new PlayerActionPrompter() {
-            private int calls = 0;
 
-            @Override
-            public Action prompt(
-                    com.jitterted.ebp.blackjack.domain.Hand playerHand,
-                    com.jitterted.ebp.blackjack.domain.Hand dealerHand) {
-                return calls++ == 0 ? Action.HIT : Action.STAND;
-            }
-        };
-
-        BlackjackService service = new BlackjackService(deck, spy, hitThenStand);
+        BlackjackService service = new BlackjackService(deck, spy, hitThenStand());
         service.play();
 
         // If dealer played their turn with 16, they'd draw and bust -> DEALER_BUSTED
