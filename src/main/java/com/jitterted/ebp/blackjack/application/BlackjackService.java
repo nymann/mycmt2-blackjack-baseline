@@ -1,12 +1,12 @@
 package com.jitterted.ebp.blackjack.application;
 
 import com.jitterted.ebp.blackjack.application.port.GameDisplay;
+import com.jitterted.ebp.blackjack.application.port.PlayingStrategy;
 import com.jitterted.ebp.blackjack.domain.Action;
 import com.jitterted.ebp.blackjack.domain.Dealer;
 import com.jitterted.ebp.blackjack.domain.Deck;
 import com.jitterted.ebp.blackjack.domain.Outcome;
 import com.jitterted.ebp.blackjack.domain.Player;
-import com.jitterted.ebp.blackjack.domain.PlayingStrategy;
 
 public class BlackjackService {
 
@@ -50,7 +50,10 @@ public class BlackjackService {
 
     private void dealerTurn() {
         if (!player.isBusted()) {
-            dealer.playTurn(deck, player.hand());
+            PlayingStrategy dealerStrategy = new DealerPlayingStrategy();
+            while (dealerStrategy.decide(dealer.hand(), player.hand()) == Action.HIT) {
+                dealer.receiveCard(deck.draw());
+            }
         }
     }
 

@@ -1,8 +1,8 @@
 package com.jitterted.ebp.blackjack.adapter.in;
 
+import com.jitterted.ebp.blackjack.application.port.PlayingStrategy;
 import com.jitterted.ebp.blackjack.domain.Action;
 import com.jitterted.ebp.blackjack.domain.Hand;
-import com.jitterted.ebp.blackjack.domain.PlayingStrategy;
 import java.util.Locale;
 import java.util.Scanner;
 

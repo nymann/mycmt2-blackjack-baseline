@@ -13,13 +13,6 @@ public class Dealer implements Actor {
         dealRoundOfCards(deck, actor);
     }
 
-    public void playTurn(Deck deck, Hand opponentHand) {
-        DealerPlayingStrategy strategy = new DealerPlayingStrategy();
-        while (strategy.decide(hand, opponentHand) == Action.HIT) {
-            receiveCard(deck.draw());
-        }
-    }
-
     @Override
     public Hand hand() {
         return hand;

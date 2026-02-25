@@ -1,4 +1,7 @@
-package com.jitterted.ebp.blackjack.domain;
+package com.jitterted.ebp.blackjack.application.port;
+
+import com.jitterted.ebp.blackjack.domain.Action;
+import com.jitterted.ebp.blackjack.domain.Hand;
 
 /**
  * Strategy for deciding whether to hit or stand.
