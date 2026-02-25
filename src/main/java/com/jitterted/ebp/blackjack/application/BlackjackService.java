@@ -52,15 +52,16 @@ public class BlackjackService {
     }
 
     private void dealerTurn() {
-        if (!player.isBusted()) {
-            PlayingStrategy dealerStrategy = new DealerPlayingStrategy();
-            while (!dealer.isBusted()) {
-                Action action = dealerStrategy.decide(dealer.hand(), player.hand());
-                if (action == Action.HIT) {
-                    dealer.receiveCard(deck.draw());
-                } else {
-                    break;
-                }
+        if (player.isBusted()) {
+            return;
+        }
+        PlayingStrategy dealerStrategy = new DealerPlayingStrategy();
+        while (!dealer.isBusted()) {
+            Action action = dealerStrategy.decide(dealer.hand(), player.hand());
+            if (action == Action.HIT) {
+                dealer.receiveCard(deck.draw());
+            } else {
+                break;
             }
         }
     }
