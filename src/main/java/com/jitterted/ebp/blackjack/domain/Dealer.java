@@ -7,10 +7,6 @@ public class Dealer {
         hand.addCard(card);
     }
 
-    public void dealFrom(Deck deck) {
-        receiveCard(deck.draw());
-    }
-
     public void playTurn(Deck deck) {
         while (hand.value() <= 16) {
             hand.drawFrom(deck);
