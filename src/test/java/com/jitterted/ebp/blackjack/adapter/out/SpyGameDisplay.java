@@ -1,21 +1,22 @@
-package com.jitterted.ebp.blackjack.application;
+package com.jitterted.ebp.blackjack.adapter.out;
 
 import com.jitterted.ebp.blackjack.application.port.GameDisplay;
 import com.jitterted.ebp.blackjack.domain.Hand;
 import com.jitterted.ebp.blackjack.domain.Outcome;
 
-class SpyGameDisplay implements GameDisplay {
+public class SpyGameDisplay implements GameDisplay {
 
     private Outcome announcedOutcome = Outcome.PUSH; // overwritten by announceOutcome()
     private boolean outcomeCaptured = false;
 
+    // method ordering
     @Override
     public void announceOutcome(Outcome outcome) {
         this.announcedOutcome = outcome;
         this.outcomeCaptured = true;
     }
 
-    Outcome announcedOutcome() {
+    public Outcome announcedOutcome() {
         if (!outcomeCaptured) {
             throw new IllegalStateException("announceOutcome was never called");
         }
@@ -36,4 +37,5 @@ class SpyGameDisplay implements GameDisplay {
 
     @Override
     public void resetScreen() {}
+    //
 }

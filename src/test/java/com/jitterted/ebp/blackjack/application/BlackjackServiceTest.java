@@ -1,7 +1,8 @@
 package com.jitterted.ebp.blackjack.application;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import com.jitterted.ebp.blackjack.adapter.out.SpyGameDisplay;
 import com.jitterted.ebp.blackjack.application.port.PlayerActionPrompter;
 import com.jitterted.ebp.blackjack.domain.Action;
 import com.jitterted.ebp.blackjack.domain.Card;
@@ -18,21 +19,7 @@ class BlackjackServiceTest {
 
     private static final PlayerActionPrompter ALWAYS_HIT = (playerHand, dealerHand) -> Action.HIT;
 
-    private static PlayerActionPrompter hitThenStand() {
-        return new PlayerActionPrompter() {
-            private int calls = 0;
-
-            @Override
-            public Action prompt(
-                    com.jitterted.ebp.blackjack.domain.Hand playerHand,
-                    com.jitterted.ebp.blackjack.domain.Hand dealerHand) {
-                return calls++ == 0 ? Action.HIT : Action.STAND;
-            }
-        };
-    }
-
-    // -- Outcome announcement --
-
+    // method ordering
     @Test
     void announcesPlayerBustedWhenPlayerBusts() {
         // Player: 10+8=18, hits, draws 10 -> 28 (busted)
@@ -49,6 +36,8 @@ class BlackjackServiceTest {
 
         assertThat(spy.announcedOutcome()).isEqualTo(Outcome.PLAYER_BUSTED);
     }
+
+    // -- Outcome announcement --
 
     @Test
     void announcesDealerBustedWhenDealerBusts() {
@@ -115,8 +104,6 @@ class BlackjackServiceTest {
         assertThat(spy.announcedOutcome()).isEqualTo(Outcome.DEALER_WINS);
     }
 
-    // -- Orchestration --
-
     @Test
     void dealerSkipsTurnWhenPlayerIsBusted() {
         // Player: 10+8=18, hits, draws 10 -> 28 (busted)
@@ -136,4 +123,22 @@ class BlackjackServiceTest {
         // But since player busted first, dealer skips -> PLAYER_BUSTED
         assertThat(spy.announcedOutcome()).isEqualTo(Outcome.PLAYER_BUSTED);
     }
+
+    // -- Orchestration --
+
+    private static PlayerActionPrompter hitThenStand() {
+        return new PlayerActionPrompter() {
+            private int calls = 0;
+
+            // method ordering
+            @Override
+            public Action prompt(
+                    com.jitterted.ebp.blackjack.domain.Hand playerHand,
+                    com.jitterted.ebp.blackjack.domain.Hand dealerHand) {
+                return calls++ == 0 ? Action.HIT : Action.STAND;
+            }
+            //
+        };
+    }
+    //
 }
