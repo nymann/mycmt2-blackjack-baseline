@@ -22,11 +22,6 @@ public class BlackjackService {
         this.playerDecisionDecider = playerDecisionDecider;
     }
 
-    public void initialDeal() {
-        dealRoundOfCards();
-        dealRoundOfCards();
-    }
-
     public void play() {
         gameDisplay.displayWelcomeScreen();
         gameDisplay.promptToStart();
@@ -42,21 +37,15 @@ public class BlackjackService {
         gameDisplay.resetScreen();
     }
 
+    private void initialDeal() {
+        dealRoundOfCards();
+        dealRoundOfCards();
+    }
+
     private void dealRoundOfCards() {
         // why: players first because this is the rule
         player.receiveCard(deck.draw());
         dealer.dealFrom(deck);
-    }
-
-    private void determineOutcome() {
-        Outcome outcome = Outcome.determine(player.hand(), dealer.hand());
-        gameDisplay.announceOutcome(outcome);
-    }
-
-    void dealerTurn() {
-        if (!player.isBusted()) {
-            dealer.playTurn(deck);
-        }
     }
 
     private void playerTurn() {
@@ -68,5 +57,16 @@ public class BlackjackService {
             }
             player.receiveCard(deck.draw());
         }
+    }
+
+    private void dealerTurn() {
+        if (!player.isBusted()) {
+            dealer.playTurn(deck);
+        }
+    }
+
+    private void determineOutcome() {
+        Outcome outcome = Outcome.determine(player.hand(), dealer.hand());
+        gameDisplay.announceOutcome(outcome);
     }
 }
