@@ -3,7 +3,7 @@ package com.jitterted.ebp.blackjack.application;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.jitterted.ebp.blackjack.adapter.out.SpyGameDisplay;
-import com.jitterted.ebp.blackjack.application.port.PlayerActionPrompter;
+import com.jitterted.ebp.blackjack.application.port.PlayingStrategy;
 import com.jitterted.ebp.blackjack.domain.Action;
 import com.jitterted.ebp.blackjack.domain.Card;
 import com.jitterted.ebp.blackjack.domain.Deck;
@@ -15,9 +15,9 @@ import org.junit.jupiter.api.Test;
 
 class BlackjackServiceTest {
 
-    private static final PlayerActionPrompter ALWAYS_STAND = (playerHand, dealerHand) -> Action.STAND;
+    private static final PlayingStrategy ALWAYS_STAND = (playerHand, dealerHand) -> Action.STAND;
 
-    private static final PlayerActionPrompter ALWAYS_HIT = (playerHand, dealerHand) -> Action.HIT;
+    private static final PlayingStrategy ALWAYS_HIT = (playerHand, dealerHand) -> Action.HIT;
 
     // method ordering
     @Test
@@ -126,18 +126,16 @@ class BlackjackServiceTest {
 
     // -- Orchestration --
 
-    private static PlayerActionPrompter hitThenStand() {
-        return new PlayerActionPrompter() {
+    private static PlayingStrategy hitThenStand() {
+        return new PlayingStrategy() {
             private int calls = 0;
 
-            // method ordering
             @Override
-            public Action prompt(
+            public Action decide(
                     com.jitterted.ebp.blackjack.domain.Hand playerHand,
                     com.jitterted.ebp.blackjack.domain.Hand dealerHand) {
                 return calls++ == 0 ? Action.HIT : Action.STAND;
             }
-            //
         };
     }
     //

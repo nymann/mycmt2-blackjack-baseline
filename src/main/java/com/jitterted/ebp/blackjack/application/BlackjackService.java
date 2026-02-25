@@ -1,7 +1,7 @@
 package com.jitterted.ebp.blackjack.application;
 
 import com.jitterted.ebp.blackjack.application.port.GameDisplay;
-import com.jitterted.ebp.blackjack.application.port.PlayerActionPrompter;
+import com.jitterted.ebp.blackjack.application.port.PlayingStrategy;
 import com.jitterted.ebp.blackjack.domain.Action;
 import com.jitterted.ebp.blackjack.domain.Dealer;
 import com.jitterted.ebp.blackjack.domain.Deck;
@@ -12,14 +12,14 @@ public class BlackjackService {
 
     private final Deck deck;
     private final GameDisplay gameDisplay;
-    private final PlayerActionPrompter playerActionPrompter;
+    private final PlayingStrategy playerStrategy;
     private final Dealer dealer = new Dealer();
     private final Player player = new Player();
 
-    public BlackjackService(Deck deck, GameDisplay gameDisplay, PlayerActionPrompter playerActionPrompter) {
+    public BlackjackService(Deck deck, GameDisplay gameDisplay, PlayingStrategy playerStrategy) {
         this.deck = deck;
         this.gameDisplay = gameDisplay;
-        this.playerActionPrompter = playerActionPrompter;
+        this.playerStrategy = playerStrategy;
     }
 
     public void play() {
@@ -40,7 +40,7 @@ public class BlackjackService {
     private void playerTurn() {
         while (!player.isBusted()) {
             gameDisplay.showPlayerTurn(player.hand(), dealer.hand());
-            Action action = playerActionPrompter.prompt(player.hand(), dealer.hand());
+            Action action = playerStrategy.decide(player.hand(), dealer.hand());
             if (action == Action.STAND) {
                 break;
             }
