@@ -2,7 +2,7 @@ package com.jitterted.ebp.blackjack.application;
 
 import static org.assertj.core.api.Assertions.*;
 
-import com.jitterted.ebp.blackjack.application.port.PlayerDecisionDecider;
+import com.jitterted.ebp.blackjack.application.port.PlayerActionPrompter;
 import com.jitterted.ebp.blackjack.domain.Action;
 import com.jitterted.ebp.blackjack.domain.Card;
 import com.jitterted.ebp.blackjack.domain.Deck;
@@ -14,9 +14,9 @@ import org.junit.jupiter.api.Test;
 
 class BlackjackServiceTest {
 
-    private static final PlayerDecisionDecider ALWAYS_STAND = (playerHand, dealerHand) -> Action.STAND;
+    private static final PlayerActionPrompter ALWAYS_STAND = (playerHand, dealerHand) -> Action.STAND;
 
-    private static final PlayerDecisionDecider ALWAYS_HIT = (playerHand, dealerHand) -> Action.HIT;
+    private static final PlayerActionPrompter ALWAYS_HIT = (playerHand, dealerHand) -> Action.HIT;
 
     // -- Outcome announcement --
 
@@ -30,11 +30,11 @@ class BlackjackServiceTest {
                 new Card(Suit.SPADES, Rank.TEN),
                 new Card(Suit.CLUBS, Rank.TEN)));
         SpyGameDisplay spy = new SpyGameDisplay();
-        PlayerDecisionDecider hitThenStand = new PlayerDecisionDecider() {
+        PlayerActionPrompter hitThenStand = new PlayerActionPrompter() {
             private int calls = 0;
 
             @Override
-            public Action decide(
+            public Action prompt(
                     com.jitterted.ebp.blackjack.domain.Hand playerHand,
                     com.jitterted.ebp.blackjack.domain.Hand dealerHand) {
                 return calls++ == 0 ? Action.HIT : Action.STAND;
@@ -125,11 +125,11 @@ class BlackjackServiceTest {
                 new Card(Suit.SPADES, Rank.TEN),
                 new Card(Suit.CLUBS, Rank.TEN)));
         SpyGameDisplay spy = new SpyGameDisplay();
-        PlayerDecisionDecider hitThenStand = new PlayerDecisionDecider() {
+        PlayerActionPrompter hitThenStand = new PlayerActionPrompter() {
             private int calls = 0;
 
             @Override
-            public Action decide(
+            public Action prompt(
                     com.jitterted.ebp.blackjack.domain.Hand playerHand,
                     com.jitterted.ebp.blackjack.domain.Hand dealerHand) {
                 return calls++ == 0 ? Action.HIT : Action.STAND;

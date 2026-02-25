@@ -7,7 +7,7 @@ import com.jitterted.ebp.blackjack.domain.Hand;
  * Input port: how player decisions enter the game.
  * Adapters implement this to get decisions from console, AI, web, etc.
  */
-public interface PlayerDecisionDecider {
+public interface PlayerActionPrompter {
 
-    Action decide(Hand playerHand, Hand dealerHand);
+    Action prompt(Hand playerHand, Hand dealerHand);
 }

@@ -1,15 +1,15 @@
 package com.jitterted.ebp.blackjack.adapter.in;
 
-import com.jitterted.ebp.blackjack.application.port.PlayerDecisionDecider;
+import com.jitterted.ebp.blackjack.application.port.PlayerActionPrompter;
 import com.jitterted.ebp.blackjack.domain.Action;
 import com.jitterted.ebp.blackjack.domain.Hand;
 import java.util.Locale;
 import java.util.Scanner;
 
-public class ConsolePlayerDecisionDecider implements PlayerDecisionDecider {
+public class ConsolePlayerActionPrompter implements PlayerActionPrompter {
 
     @Override
-    public Action decide(Hand playerHand, Hand dealerHand) {
+    public Action prompt(Hand playerHand, Hand dealerHand) {
         while (true) {
             System.out.println("[H]it or [S]tand?");
             Scanner scanner = new Scanner(System.in, java.nio.charset.StandardCharsets.UTF_8);
