@@ -1,12 +1,12 @@
 package com.jitterted.ebp.blackjack.adapter.in;
 
-import com.jitterted.ebp.blackjack.application.port.PlayerDecision;
+import com.jitterted.ebp.blackjack.application.port.PlayerDecisionDecider;
 import com.jitterted.ebp.blackjack.domain.Action;
 import com.jitterted.ebp.blackjack.domain.Hand;
 import java.util.Locale;
 import java.util.Scanner;
 
-public class ConsolePlayerDecision implements PlayerDecision {
+public class ConsolePlayerDecisionDecider implements PlayerDecisionDecider {
 
     @Override
     public Action decide(Hand playerHand, Hand dealerHand) {

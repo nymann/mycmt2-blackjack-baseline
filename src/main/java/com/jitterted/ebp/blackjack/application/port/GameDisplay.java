@@ -9,9 +9,15 @@ import com.jitterted.ebp.blackjack.domain.Outcome;
  */
 public interface GameDisplay {
 
+    void displayWelcomeScreen();
+
+    void promptToStart();
+
     void showPlayerTurn(Hand playerHand, Hand dealerHand);
 
     void showFinalHands(Hand playerHand, Hand dealerHand);
 
     void announceOutcome(Outcome outcome);
+
+    void resetScreen();
 }

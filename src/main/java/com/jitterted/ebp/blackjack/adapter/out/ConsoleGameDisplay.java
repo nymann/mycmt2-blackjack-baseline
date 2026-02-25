@@ -9,8 +9,36 @@ import com.jitterted.ebp.blackjack.domain.Outcome;
 import com.jitterted.ebp.blackjack.domain.Rank;
 import java.util.stream.Collectors;
 import org.fusesource.jansi.Ansi;
+import org.fusesource.jansi.AnsiConsole;
 
 public class ConsoleGameDisplay implements GameDisplay {
+
+    public ConsoleGameDisplay() {
+        AnsiConsole.systemInstall();
+    }
+
+    @Override
+    public void displayWelcomeScreen() {
+        System.out.println(ansi().bgBright(Ansi.Color.WHITE)
+                .eraseScreen()
+                .cursor(1, 1)
+                .fgGreen()
+                .a("Welcome to")
+                .fgRed()
+                .a(" JitterTed's")
+                .fgBlack()
+                .a(" BlackJack game"));
+    }
+
+    @Override
+    public void promptToStart() {
+        System.out.println(ansi().cursor(3, 1).fgBrightBlack().a("Hit [ENTER] to start..."));
+
+        java.io.Console console = System.console();
+        if (console != null) {
+            console.readLine();
+        }
+    }
 
     @Override
     public void showPlayerTurn(Hand playerHand, Hand dealerHand) {
@@ -50,6 +78,11 @@ public class ConsoleGameDisplay implements GameDisplay {
                     case DEALER_WINS -> "You lost to the Dealer. \uD83D\uDCB8";
                 };
         System.out.println(message);
+    }
+
+    @Override
+    public void resetScreen() {
+        System.out.println(ansi().reset());
     }
 
     private void displayHand(Hand hand) {
