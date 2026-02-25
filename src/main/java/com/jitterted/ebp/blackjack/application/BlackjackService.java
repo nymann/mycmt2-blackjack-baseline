@@ -45,7 +45,7 @@ public class BlackjackService {
     private void dealRoundOfCards() {
         // why: players first because this is the rule
         player.receiveCard(deck.draw());
-        dealer.dealFrom(deck);
+        dealer.receiveCard(deck.draw());
     }
 
     private void playerTurn() {

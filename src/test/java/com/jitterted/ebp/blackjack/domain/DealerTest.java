@@ -16,8 +16,8 @@ class DealerTest {
                 new Card(DUMMY_SUIT, Rank.TEN), new Card(DUMMY_SUIT, Rank.SIX), new Card(DUMMY_SUIT, Rank.TWO)));
 
         Dealer dealer = new Dealer();
-        dealer.dealFrom(deck);
-        dealer.dealFrom(deck);
+        dealer.receiveCard(deck.draw());
+        dealer.receiveCard(deck.draw());
         dealer.playTurn(deck);
 
         assertThat(dealer.hand().valueEquals(18)).isTrue();
@@ -31,8 +31,8 @@ class DealerTest {
                 new Card(DUMMY_SUIT, Rank.ACE))); // should NOT be drawn
 
         Dealer dealer = new Dealer();
-        dealer.dealFrom(deck);
-        dealer.dealFrom(deck);
+        dealer.receiveCard(deck.draw());
+        dealer.receiveCard(deck.draw());
         dealer.playTurn(deck);
 
         assertThat(dealer.hand().valueEquals(17)).isTrue();
@@ -49,8 +49,8 @@ class DealerTest {
                 new Card(DUMMY_SUIT, Rank.SIX)));
 
         Dealer dealer = new Dealer();
-        dealer.dealFrom(deck);
-        dealer.dealFrom(deck);
+        dealer.receiveCard(deck.draw());
+        dealer.receiveCard(deck.draw());
         dealer.playTurn(deck);
 
         assertThat(dealer.hand().valueEquals(18)).isTrue();
@@ -63,8 +63,8 @@ class DealerTest {
                 new Card(DUMMY_SUIT, Rank.TEN), new Card(DUMMY_SUIT, Rank.SIX), new Card(DUMMY_SUIT, Rank.TEN)));
 
         Dealer dealer = new Dealer();
-        dealer.dealFrom(deck);
-        dealer.dealFrom(deck);
+        dealer.receiveCard(deck.draw());
+        dealer.receiveCard(deck.draw());
         dealer.playTurn(deck);
 
         assertThat(dealer.isBusted()).isTrue();
