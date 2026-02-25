@@ -43,10 +43,11 @@ public class BlackjackService {
         while (!player.isBusted()) {
             gameDisplay.showPlayerTurn(player.hand(), dealer.hand());
             Action action = playerStrategy.decide(player.hand(), dealer.hand());
-            if (action == Action.STAND) {
+            if (action == Action.HIT) {
+                player.receiveCard(deck.draw());
+            } else {
                 break;
             }
-            player.receiveCard(deck.draw());
         }
     }
 
@@ -55,10 +56,11 @@ public class BlackjackService {
             PlayingStrategy dealerStrategy = new DealerPlayingStrategy();
             while (!dealer.isBusted()) {
                 Action action = dealerStrategy.decide(dealer.hand(), player.hand());
-                if (action == Action.STAND) {
+                if (action == Action.HIT) {
+                    dealer.receiveCard(deck.draw());
+                } else {
                     break;
                 }
-                dealer.receiveCard(deck.draw());
             }
         }
     }
